@@ -4,441 +4,405 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Iniciando seed de la base de datos...\n');
+  console.log('🌱 Starting database seed...\n');
 
-  // Limpiar datos existentes
-  console.log('🗑️  Limpiando datos existentes...');
-  await prisma.cita.deleteMany();
-  await prisma.horarioAtencion.deleteMany();
-  await prisma.medico.deleteMany();
-  await prisma.terapia.deleteMany();
+  console.log('🗑️  Cleaning existing data...');
+  await prisma.appointment.deleteMany();
+  await prisma.workSchedule.deleteMany();
+  await prisma.doctor.deleteMany();
+  await prisma.therapy.deleteMany();
   await prisma.user.deleteMany();
-  console.log('✅ Datos limpiados\n');
+  console.log('✅ Data cleaned\n');
 
-  // Hash de contraseñas
   const passwordHash = await bcrypt.hash('password123', 10);
   const adminPasswordHash = await bcrypt.hash('admin123', 10);
 
-  // ============================================
-  // 1. CREAR USUARIOS
-  // ============================================
-  console.log('👥 Creando usuarios...');
+  console.log('👥 Creating users...');
 
-  // Admin
   const admin = await prisma.user.create({
     data: {
-      cedula: 'admin',
+      nationalId: 'admin',
       username: 'admin',
       password: adminPasswordHash,
-      fullName: 'Administrador del Sistema',
+      fullName: 'System Administrator',
       email: 'admin@flova.com',
-      telefono: '0999999999',
-      tipoSeguro: 'ninguno',
+      phone: '0999999999',
+      insuranceType: 'none',
       role: 'admin'
     }
   });
-  console.log('  ✓ Admin creado');
+  console.log('  ✓ Admin created');
 
-  // Pacientes
-  const paciente1 = await prisma.user.create({
+  const patient1 = await prisma.user.create({
     data: {
-      cedula: '1234567890',
+      nationalId: '1234567890',
       username: '1234567890',
       password: passwordHash,
-      fullName: 'Juan Pérez García',
+      fullName: 'Juan Perez Garcia',
       email: 'juan.perez@email.com',
-      telefono: '0987654321',
-      tipoSeguro: 'iess',
+      phone: '0987654321',
+      insuranceType: 'iess',
       role: 'paciente'
     }
   });
 
-  const paciente2 = await prisma.user.create({
+  const patient2 = await prisma.user.create({
     data: {
-      cedula: '0987654321',
+      nationalId: '0987654321',
       username: '0987654321',
       password: passwordHash,
-      fullName: 'María González López',
+      fullName: 'Maria Gonzalez Lopez',
       email: 'maria.gonzalez@email.com',
-      telefono: '0987654322',
-      tipoSeguro: 'privado',
+      phone: '0987654322',
+      insuranceType: 'privado',
       role: 'paciente'
     }
   });
 
-  const paciente3 = await prisma.user.create({
+  const patient3 = await prisma.user.create({
     data: {
-      cedula: '1122334455',
+      nationalId: '1122334455',
       username: '1122334455',
       password: passwordHash,
-      fullName: 'Carlos Ramírez Torres',
+      fullName: 'Carlos Ramirez Torres',
       email: 'carlos.ramirez@email.com',
-      telefono: '0987654323',
-      tipoSeguro: 'issfa',
+      phone: '0987654323',
+      insuranceType: 'issfa',
       role: 'paciente'
     }
   });
 
-  console.log('  ✓ 3 pacientes creados');
+  console.log('  ✓ 3 patients created');
 
-  // Médicos
-  const medicoUser1 = await prisma.user.create({
+  const doctorUser1 = await prisma.user.create({
     data: {
-      cedula: '1111111111',
+      nationalId: '1111111111',
       username: '1111111111',
       password: passwordHash,
       fullName: 'Dr. Carlos Mendoza Silva',
       email: 'carlos.mendoza@flova.com',
-      telefono: '0991111111',
-      tipoSeguro: 'privado',
+      phone: '0991111111',
+      insuranceType: 'privado',
       role: 'medico'
     }
   });
 
-  const medicoUser2 = await prisma.user.create({
+  const doctorUser2 = await prisma.user.create({
     data: {
-      cedula: '2222222222',
+      nationalId: '2222222222',
       username: '2222222222',
       password: passwordHash,
-      fullName: 'Dra. María González Ruiz',
+      fullName: 'Dra. Maria Gonzalez Ruiz',
       email: 'maria.gonzalez.med@flova.com',
-      telefono: '0992222222',
-      tipoSeguro: 'privado',
+      phone: '0992222222',
+      insuranceType: 'privado',
       role: 'medico'
     }
   });
 
-  const medicoUser3 = await prisma.user.create({
+  const doctorUser3 = await prisma.user.create({
     data: {
-      cedula: '3333333333',
+      nationalId: '3333333333',
       username: '3333333333',
       password: passwordHash,
       fullName: 'Dr. Roberto Silva Morales',
       email: 'roberto.silva@flova.com',
-      telefono: '0993333333',
-      tipoSeguro: 'privado',
+      phone: '0993333333',
+      insuranceType: 'privado',
       role: 'medico'
     }
   });
 
-  const medicoUser4 = await prisma.user.create({
+  const doctorUser4 = await prisma.user.create({
     data: {
-      cedula: '4444444444',
+      nationalId: '4444444444',
       username: '4444444444',
       password: passwordHash,
-      fullName: 'Dra. Ana Martínez Vega',
+      fullName: 'Dra. Ana Martinez Vega',
       email: 'ana.martinez@flova.com',
-      telefono: '0994444444',
-      tipoSeguro: 'privado',
+      phone: '0994444444',
+      insuranceType: 'privado',
       role: 'medico'
     }
   });
 
-  console.log('  ✓ 4 médicos creados\n');
+  console.log('  ✓ 4 doctors created\n');
 
-  // ============================================
-  // 2. CREAR PERFILES DE MÉDICOS
-  // ============================================
-  console.log('🩺 Creando perfiles de médicos...');
+  console.log('🩺 Creating doctor profiles...');
 
-  const medico1 = await prisma.medico.create({
+  const doctor1 = await prisma.doctor.create({
     data: {
-      userId: medicoUser1.id,
-      especialidad: 'Fisioterapia',
-      numeroLicencia: 'MED-FIS-001',
-      calificacion: 4.8,
-      pacientesAtendidos: 245
+      userId: doctorUser1.id,
+      specialty: 'Fisioterapia',
+      licenseNumber: 'MED-FIS-001',
+      rating: 4.8,
+      patientsServed: 245
     }
   });
 
-  const medico2 = await prisma.medico.create({
+  const doctor2 = await prisma.doctor.create({
     data: {
-      userId: medicoUser2.id,
-      especialidad: 'Terapia Ocupacional',
-      numeroLicencia: 'MED-TO-002',
-      calificacion: 4.9,
-      pacientesAtendidos: 189
+      userId: doctorUser2.id,
+      specialty: 'Terapia Ocupacional',
+      licenseNumber: 'MED-TO-002',
+      rating: 4.9,
+      patientsServed: 189
     }
   });
 
-  const medico3 = await prisma.medico.create({
+  const doctor3 = await prisma.doctor.create({
     data: {
-      userId: medicoUser3.id,
-      especialidad: 'Psicología',
-      numeroLicencia: 'MED-PSI-003',
-      calificacion: 4.7,
-      pacientesAtendidos: 312
+      userId: doctorUser3.id,
+      specialty: 'Psicologia',
+      licenseNumber: 'MED-PSI-003',
+      rating: 4.7,
+      patientsServed: 312
     }
   });
 
-  const medico4 = await prisma.medico.create({
+  const doctor4 = await prisma.doctor.create({
     data: {
-      userId: medicoUser4.id,
-      especialidad: 'Fisioterapia',
-      numeroLicencia: 'MED-FIS-004',
-      calificacion: 4.6,
-      pacientesAtendidos: 156
+      userId: doctorUser4.id,
+      specialty: 'Fisioterapia',
+      licenseNumber: 'MED-FIS-004',
+      rating: 4.6,
+      patientsServed: 156
     }
   });
 
-  console.log('  ✓ 4 perfiles de médicos creados\n');
+  console.log('  ✓ 4 doctor profiles created\n');
 
-  // ============================================
-  // 3. CREAR HORARIOS DE ATENCIÓN
-  // ============================================
-  console.log('📅 Creando horarios de atención...');
+  console.log('📅 Creating work schedules...');
 
-  // Horarios para Dr. Carlos Mendoza (Fisioterapia)
-  // Lunes a Viernes: 08:00 - 16:00
-  for (let dia = 1; dia <= 5; dia++) {
-    await prisma.horarioAtencion.create({
+  for (let day = 1; day <= 5; day++) {
+    await prisma.workSchedule.create({
       data: {
-        medicoId: medico1.id,
-        diaSemana: dia,
-        horaInicio: '08:00',
-        horaFin: '16:00'
+        doctorId: doctor1.id,
+        dayOfWeek: day,
+        startTime: '08:00',
+        endTime: '16:00'
       }
     });
   }
-  // Sábado: 08:00 - 12:00 (medio día)
-  await prisma.horarioAtencion.create({
+  await prisma.workSchedule.create({
     data: {
-      medicoId: medico1.id,
-      diaSemana: 6,
-      horaInicio: '08:00',
-      horaFin: '12:00'
+      doctorId: doctor1.id,
+      dayOfWeek: 6,
+      startTime: '08:00',
+      endTime: '12:00'
     }
   });
 
-  // Horarios para Dra. María González (Terapia Ocupacional)
-  // Lunes a Viernes: 09:00 - 17:00
-  for (let dia = 1; dia <= 5; dia++) {
-    await prisma.horarioAtencion.create({
+  for (let day = 1; day <= 5; day++) {
+    await prisma.workSchedule.create({
       data: {
-        medicoId: medico2.id,
-        diaSemana: dia,
-        horaInicio: '09:00',
-        horaFin: '17:00'
+        doctorId: doctor2.id,
+        dayOfWeek: day,
+        startTime: '09:00',
+        endTime: '17:00'
       }
     });
   }
 
-  // Horarios para Dr. Roberto Silva (Psicología)
-  // Lunes a Viernes: 10:00 - 18:00
-  for (let dia = 1; dia <= 5; dia++) {
-    await prisma.horarioAtencion.create({
+  for (let day = 1; day <= 5; day++) {
+    await prisma.workSchedule.create({
       data: {
-        medicoId: medico3.id,
-        diaSemana: dia,
-        horaInicio: '10:00',
-        horaFin: '18:00'
+        doctorId: doctor3.id,
+        dayOfWeek: day,
+        startTime: '10:00',
+        endTime: '18:00'
       }
     });
   }
-  // Sábado: 10:00 - 14:00 (medio día)
-  await prisma.horarioAtencion.create({
+  await prisma.workSchedule.create({
     data: {
-      medicoId: medico3.id,
-      diaSemana: 6,
-      horaInicio: '10:00',
-      horaFin: '14:00'
+      doctorId: doctor3.id,
+      dayOfWeek: 6,
+      startTime: '10:00',
+      endTime: '14:00'
     }
   });
 
-  // Horarios para Dra. Ana Martínez (Fisioterapia)
-  // Lunes a Viernes: 14:00 - 20:00
-  for (let dia = 1; dia <= 5; dia++) {
-    await prisma.horarioAtencion.create({
+  for (let day = 1; day <= 5; day++) {
+    await prisma.workSchedule.create({
       data: {
-        medicoId: medico4.id,
-        diaSemana: dia,
-        horaInicio: '14:00',
-        horaFin: '20:00'
+        doctorId: doctor4.id,
+        dayOfWeek: day,
+        startTime: '14:00',
+        endTime: '20:00'
       }
     });
   }
 
-  console.log('  ✓ Horarios de atención creados\n');
+  console.log('  ✓ Work schedules created\n');
 
-  // ============================================
-  // 4. CREAR TERAPIAS
-  // ============================================
-  console.log('💊 Creando terapias...');
+  console.log('💊 Creating therapies...');
 
-  const terapia1 = await prisma.terapia.create({
+  const therapy1 = await prisma.therapy.create({
     data: {
-      nombre: 'Fisioterapia Deportiva',
-      descripcion: 'Tratamiento especializado para lesiones deportivas y recuperación de atletas. Incluye técnicas de rehabilitación avanzadas.',
-      especialidad: 'Fisioterapia',
-      duracion: 60,
-      precio: 45.00,
-      imagen: 'https://picsum.photos/seed/fisio1/400/300',
-      activa: true
+      name: 'Fisioterapia Deportiva',
+      description: 'Specialized treatment for sports injuries and athlete recovery. Includes advanced rehabilitation techniques.',
+      specialty: 'Fisioterapia',
+      duration: 60,
+      price: 45.00,
+      image: 'https://picsum.photos/seed/fisio1/400/300',
+      active: true
     }
   });
 
-  const terapia2 = await prisma.terapia.create({
+  const therapy2 = await prisma.therapy.create({
     data: {
-      nombre: 'Rehabilitación Post-Quirúrgica',
-      descripcion: 'Programa de rehabilitación integral después de cirugías ortopédicas. Recuperación funcional completa.',
-      especialidad: 'Fisioterapia',
-      duracion: 75,
-      precio: 65.00,
-      imagen: 'https://picsum.photos/seed/fisio2/400/300',
-      activa: true
+      name: 'Rehabilitacion Post-Quirurgica',
+      description: 'Comprehensive rehabilitation program after orthopedic surgeries. Full functional recovery.',
+      specialty: 'Fisioterapia',
+      duration: 75,
+      price: 65.00,
+      image: 'https://picsum.photos/seed/fisio2/400/300',
+      active: true
     }
   });
 
-  const terapia3 = await prisma.terapia.create({
+  const therapy3 = await prisma.therapy.create({
     data: {
-      nombre: 'Terapia Ocupacional Pediátrica',
-      descripcion: 'Intervención temprana para niños con dificultades en el desarrollo motor y cognitivo.',
-      especialidad: 'Terapia Ocupacional',
-      duracion: 45,
-      precio: 50.00,
-      imagen: 'https://picsum.photos/seed/to1/400/300',
-      activa: true
+      name: 'Terapia Ocupacional Pediatrica',
+      description: 'Early intervention for children with difficulties in motor and cognitive development.',
+      specialty: 'Terapia Ocupacional',
+      duration: 45,
+      price: 50.00,
+      image: 'https://picsum.photos/seed/to1/400/300',
+      active: true
     }
   });
 
-  const terapia4 = await prisma.terapia.create({
+  const therapy4 = await prisma.therapy.create({
     data: {
-      nombre: 'Terapia Ocupacional para Adultos Mayores',
-      descripcion: 'Mejora de la independencia funcional y calidad de vida en adultos mayores.',
-      especialidad: 'Terapia Ocupacional',
-      duracion: 60,
-      precio: 55.00,
-      imagen: 'https://picsum.photos/seed/to2/400/300',
-      activa: true
+      name: 'Terapia Ocupacional para Adultos Mayores',
+      description: 'Improvement of functional independence and quality of life in older adults.',
+      specialty: 'Terapia Ocupacional',
+      duration: 60,
+      price: 55.00,
+      image: 'https://picsum.photos/seed/to2/400/300',
+      active: true
     }
   });
 
-  const terapia5 = await prisma.terapia.create({
+  const therapy5 = await prisma.therapy.create({
     data: {
-      nombre: 'Terapia Cognitivo-Conductual',
-      descripcion: 'Tratamiento psicológico para ansiedad, depresión y otros trastornos emocionales.',
-      especialidad: 'Psicología',
-      duracion: 60,
-      precio: 55.00,
-      imagen: 'https://picsum.photos/seed/psi1/400/300',
-      activa: true
+      name: 'Terapia Cognitivo-Conductual',
+      description: 'Psychological treatment for anxiety, depression and other emotional disorders.',
+      specialty: 'Psicologia',
+      duration: 60,
+      price: 55.00,
+      image: 'https://picsum.photos/seed/psi1/400/300',
+      active: true
     }
   });
 
-  const terapia6 = await prisma.terapia.create({
+  const therapy6 = await prisma.therapy.create({
     data: {
-      nombre: 'Terapia Familiar',
-      descripcion: 'Intervención psicológica para mejorar la comunicación y resolver conflictos familiares.',
-      especialidad: 'Psicología',
-      duracion: 90,
-      precio: 75.00,
-      imagen: 'https://picsum.photos/seed/psi2/400/300',
-      activa: true
+      name: 'Terapia Familiar',
+      description: 'Psychological intervention to improve communication and resolve family conflicts.',
+      specialty: 'Psicologia',
+      duration: 90,
+      price: 75.00,
+      image: 'https://picsum.photos/seed/psi2/400/300',
+      active: true
     }
   });
 
-  console.log('  ✓ 6 terapias creadas\n');
+  console.log('  ✓ 6 therapies created\n');
 
-  // ============================================
-  // 5. CREAR CITAS DE EJEMPLO
-  // ============================================
-  console.log('📋 Creando citas de ejemplo...');
+  console.log('📋 Creating sample appointments...');
 
-  // Cita futura (pendiente)
-  const fechaFutura = new Date();
-  fechaFutura.setDate(fechaFutura.getDate() + 3);
+  const futureDate = new Date();
+  futureDate.setDate(futureDate.getDate() + 3);
 
-  await prisma.cita.create({
+  await prisma.appointment.create({
     data: {
-      pacienteId: paciente1.id,
-      medicoId: medico1.id,
-      terapiaId: terapia1.id,
-      fecha: fechaFutura,
-      hora: '10:00',
-      estado: 'pendiente',
-      sintomas: 'Dolor en rodilla derecha después de correr. Necesito evaluación para continuar entrenamiento.',
-      tieneExamenes: false,
-      examenes: []
+      patientId: patient1.id,
+      doctorId: doctor1.id,
+      therapyId: therapy1.id,
+      date: futureDate,
+      time: '10:00',
+      status: 'pending',
+      symptoms: 'Right knee pain after running. Need evaluation to continue training.',
+      hasExams: false,
+      exams: []
     }
   });
 
-  // Cita futura (confirmada)
-  const fechaFutura2 = new Date();
-  fechaFutura2.setDate(fechaFutura2.getDate() + 5);
+  const futureDate2 = new Date();
+  futureDate2.setDate(futureDate2.getDate() + 5);
 
-  await prisma.cita.create({
+  await prisma.appointment.create({
     data: {
-      pacienteId: paciente2.id,
-      medicoId: medico2.id,
-      terapiaId: terapia3.id,
-      fecha: fechaFutura2,
-      hora: '11:00',
-      estado: 'confirmada',
-      sintomas: 'Mi hijo de 5 años tiene dificultades con la motricidad fina. Necesita evaluación.',
-      tieneExamenes: true,
-      examenes: ['evaluacion_escolar.pdf']
+      patientId: patient2.id,
+      doctorId: doctor2.id,
+      therapyId: therapy3.id,
+      date: futureDate2,
+      time: '11:00',
+      status: 'confirmed',
+      symptoms: 'My 5-year-old child has difficulties with fine motor skills. Needs evaluation.',
+      hasExams: true,
+      exams: ['evaluacion_escolar.pdf']
     }
   });
 
-  // Cita pasada (completada)
-  const fechaPasada = new Date();
-  fechaPasada.setDate(fechaPasada.getDate() - 7);
+  const pastDate = new Date();
+  pastDate.setDate(pastDate.getDate() - 7);
 
-  await prisma.cita.create({
+  await prisma.appointment.create({
     data: {
-      pacienteId: paciente3.id,
-      medicoId: medico3.id,
-      terapiaId: terapia5.id,
-      fecha: fechaPasada,
-      hora: '15:00',
-      estado: 'completada',
-      sintomas: 'Ansiedad generalizada y problemas para dormir. Busco ayuda profesional.',
-      tieneExamenes: false,
-      examenes: [],
-      notasMedico: 'Paciente presenta síntomas de ansiedad moderada. Se recomienda continuar con sesiones semanales.'
+      patientId: patient3.id,
+      doctorId: doctor3.id,
+      therapyId: therapy5.id,
+      date: pastDate,
+      time: '15:00',
+      status: 'completed',
+      symptoms: 'Generalized anxiety and sleeping problems. Seeking professional help.',
+      hasExams: false,
+      exams: [],
+      doctorNotes: 'Patient shows symptoms of moderate anxiety. Weekly sessions recommended.'
     }
   });
 
-  console.log('  ✓ 3 citas de ejemplo creadas\n');
+  console.log('  ✓ 3 sample appointments created\n');
 
-  // ============================================
-  // RESUMEN
-  // ============================================
-  console.log('✅ Seed completado exitosamente!\n');
-  console.log('📊 RESUMEN:');
-  console.log('  • 1 Administrador');
-  console.log('  • 3 Pacientes');
-  console.log('  • 4 Médicos');
-  console.log('  • 6 Terapias');
-  console.log('  • 3 Citas de ejemplo');
+  console.log('✅ Seed completed successfully!\n');
+  console.log('📊 SUMMARY:');
+  console.log('  • 1 Administrator');
+  console.log('  • 3 Patients');
+  console.log('  • 4 Doctors');
+  console.log('  • 6 Therapies');
+  console.log('  • 3 Sample Appointments');
   console.log('');
-  console.log('🔑 CREDENCIALES DE PRUEBA:');
+  console.log('🔑 TEST CREDENTIALS:');
   console.log('');
   console.log('  👨‍💼 ADMIN:');
-  console.log('     Cédula: admin');
-  console.log('     Contraseña: admin123');
+  console.log('     National ID: admin');
+  console.log('     Password: admin123');
   console.log('');
-  console.log('  👤 PACIENTE:');
-  console.log('     Cédula: 1234567890');
-  console.log('     Contraseña: password123');
+  console.log('  👤 PATIENT:');
+  console.log('     National ID: 1234567890');
+  console.log('     Password: password123');
   console.log('');
-  console.log('  👨‍⚕️ MÉDICO (Fisioterapia):');
-  console.log('     Cédula: 1111111111');
-  console.log('     Contraseña: password123');
+  console.log('  👨‍⚕️ DOCTOR (Physiotherapy):');
+  console.log('     National ID: 1111111111');
+  console.log('     Password: password123');
   console.log('');
-  console.log('  👩‍⚕️ MÉDICO (Terapia Ocupacional):');
-  console.log('     Cédula: 2222222222');
-  console.log('     Contraseña: password123');
+  console.log('  👩‍⚕️ DOCTOR (Occupational Therapy):');
+  console.log('     National ID: 2222222222');
+  console.log('     Password: password123');
   console.log('');
-  console.log('  👨‍⚕️ MÉDICO (Psicología):');
-  console.log('     Cédula: 3333333333');
-  console.log('     Contraseña: password123');
+  console.log('  👨‍⚕️ DOCTOR (Psychology):');
+  console.log('     National ID: 3333333333');
+  console.log('     Password: password123');
   console.log('');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error en seed:', e);
+    console.error('❌ Error in seed:', e);
     process.exit(1);
   })
   .finally(async () => {
